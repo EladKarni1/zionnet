@@ -1,47 +1,27 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'elad12/minikube-docker:v1'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     
     environment {
         KUBE_CONFIG = credentials('kubeconfig')
     }
     
     stages {
-        stage('Install Docker') {
+        stage('Clone Repository') {
             steps {
-                script {
-                    sh '''
-                        sudo apt-get update
-                        sudo apt-get install -y docker.io
-                    '''
-                }
-            }
-        }
-        
-        stage('Install Minikube') {
-            steps {
-                script {
-                    sh '''
-                        curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-                        chmod +x minikube
-                        mv minikube /usr/local/bin/
-                    '''
-                }
+                git url: 'https://github.com/EladKarni1/zionnet', branch: 'master'
             }
         }
         
         stage('Start Minikube') {
             steps {
                 script {
-                    sh '''
-                        minikube start --driver=docker
-                    '''
+                    sh 'minikube start --driver=docker'
                 }
-            }
-        }
-        
-        stage('Clone Repository') {
-            steps {
-                git url: 'https://github.com/EladKarni1/zionnet', branch: 'master'
             }
         }
         
