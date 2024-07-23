@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'elad12/minikube-docker:v1'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
     
     environment {
         KUBE_CONFIG = credentials('kubeconfig')
@@ -17,10 +12,16 @@ pipeline {
             }
         }
         
-        stage('Start Minikube') {
+        stage('Setup Docker and Minikube') {
             steps {
                 script {
-                    sh 'minikube start --driver=docker'
+                    docker.image('elad12/minikube-docker:v1').inside {
+                        sh '''
+                            minikube start --driver=docker
+                            kubectl apply -f namespaceapp.yaml
+                            kubectl apply -f deploymentapp.yaml
+                        '''
+                    }
                 }
             }
         }
@@ -33,16 +34,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Apply Kubernetes Configurations') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                        sh 'kubectl apply -f namespaceapp.yaml'
-                        sh 'kubectl apply -f deploymentapp.yaml'
-                    }
-                }
-            }
-        }
     }
 }
+
