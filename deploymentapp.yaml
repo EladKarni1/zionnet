@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: helloworld-app-deployment
+  namespace: app
+  annotations:
+    kubernetes.io/change-cause: "Initional deployment of the app"
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: helloworld-app
+  template:
+    metadata:
+      name: myhelloworldapp
+      labels:
+        env: prod
+        app: helloworld-app
+        app.kubernetes.io/name: helloworld-app
+    spec:
+      containers:
+        - name: helloworld-app
+          image: elad12/helloworld:v1
+          ports:
+            - containerPort: 80
+              name: http-web-api
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:80          
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-lb-service
+  namespace: app
+spec:
+  selector:
+    app.kubernetes.io/name: helloworld-app
+  ports:
+    - name: helloworld-app-port
+      protocol: TCP
+      port: 8080
+      targetPort: 80
+      nodePort: 30080 #range 30000-32767
+  type: NodePort
