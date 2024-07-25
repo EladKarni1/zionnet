@@ -21,7 +21,7 @@ spec:
       containers:
         - name: helloworld-app
           imagePullPolicy: Always
-          image: elad12/helloworld:v1
+          image: elad12/helloworld:latest
           ports:
             - containerPort: 80
               name: http-web-api

@@ -20,7 +20,20 @@ pipeline {
                 volumeMounts:
                 - mountPath: /home/jenkins/agent
                   name: workspace-volume
+              - name: docker
+                image: docker:20.10.7
+                command:
+                - cat
+                tty: true
+                volumeMounts:
+                - mountPath: /var/run/docker.sock
+                  name: docker-socket
+                - mountPath: /home/jenkins/agent
+                  name: workspace-volume
               volumes:
+              - name: docker-socket
+                hostPath:
+                  path: /var/run/docker.sock
               - name: workspace-volume
                 emptyDir: {}
             """
@@ -34,10 +47,20 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                container('dotnet') {
-                    sh 'dotnet build'
+                container('docker') {
+                    sh 'docker build -t elad12/helloworld:latest .'
+                }
+            }
+        }
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                container('docker') {
+                    withCredentials([string(credentialsId: 'dockerhub-credentials-id', variable: 'DOCKER_HUB_PASSWORD')]) {
+                        sh 'echo $DOCKER_HUB_PASSWORD | docker login -u elad12 --password-stdin'
+                        sh 'docker push elad12/helloworld:latest'
+                    }
                 }
             }
         }
@@ -68,3 +91,4 @@ pipeline {
         }
     }
 }
+

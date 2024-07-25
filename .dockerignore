@@ -1,0 +1,9 @@
+# Ignore all files
+**
+
+# Exclude specific directory and its contents
+!HelloWorld/
+!HelloWorld/**
+
+#Exclude specific file
+!HelloWorld.sln
