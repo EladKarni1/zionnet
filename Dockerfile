@@ -2,8 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 #/app folder in my container
 WORKDIR /app
-#Port 80 is the default port for HTTP
-#EXPOSE 80
 #copy csproj(the source code) to root directory
 COPY HelloWorld/*.csproj ./
 #restore all the dependencies in my application (if we cant restore we have problem and we stop here)
