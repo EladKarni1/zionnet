@@ -20,6 +20,7 @@ spec:
     spec:
       containers:
         - name: helloworld-app
+          imagePullPolicy: Always
           image: elad12/helloworld:v1
           ports:
             - containerPort: 80
