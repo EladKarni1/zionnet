@@ -39,6 +39,10 @@ pipeline {
             """
         }
     }
+    triggers {
+
+        gitHubPush()
+    }
     stages {
         stage('Git Clone') {
             steps {
