@@ -50,7 +50,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 container('docker') {
-                    sh 'docker build -t elad12/helloworld:latest .'
+                    sh 'docker build --no-cache -t elad12/helloworld:latest .'
                 }
             }
         }
@@ -76,6 +76,6 @@ pipeline {
             }
         }
     }
-    
+
 }
 
