@@ -71,6 +71,7 @@ pipeline {
                         sh 'echo "Kubectl version:" && kubectl version --client'
                         sh 'kubectl apply -f namespaceapp.yaml'
                         sh 'kubectl apply -f deploymentapp.yaml'
+                        sh 'kubectl rollout restart deployment/helloworld-app-deployment -n app'
                     }
                 }
             }
