@@ -40,7 +40,7 @@ pipeline {
         }
     }
     stages {
-        stage('Checkout') {
+        stage('Git Clone') {
             steps {
                 container('dotnet') {
                     git branch: 'master', url: 'https://github.com/EladKarni1/zionnet'
@@ -64,7 +64,7 @@ pipeline {
                 }
             }
         }
-        stage('Apply Kubernetes Configurations') {
+        stage('Deploy Web App') {
             steps {
                 container('kubectl') {
                     script {
@@ -76,19 +76,6 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            echo 'This will always run'
-        }
-        success {
-            echo 'This will run only if the pipeline succeeds'
-        }
-        failure {
-            echo 'This will run only if the pipeline fails'
-        }
-        cleanup {
-            echo 'This will run after the pipeline completes, regardless of the result'
-        }
-    }
+    
 }
 
