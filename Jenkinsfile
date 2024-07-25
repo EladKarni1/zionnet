@@ -57,8 +57,8 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 container('docker') {
-                    withCredentials([string(credentialsId: 'dockerhub-credentials-id', variable: 'DOCKER_HUB_PASSWORD')]) {
-                        sh 'echo $DOCKER_HUB_PASSWORD | docker login -u elad12 --password-stdin'
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                        sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
                         sh 'docker push elad12/helloworld:latest'
                     }
                 }
