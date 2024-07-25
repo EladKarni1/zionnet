@@ -14,7 +14,6 @@ spec:
     metadata:
       name: myhelloworldapp
       labels:
-        env: prod
         app: helloworld-app
         app.kubernetes.io/name: helloworld-app
     spec:
